@@ -27,3 +27,11 @@
     });
 
 }); 
+
+
+
+$(document).ready(function () {
+    $('#GetFolderInFiles').click(function () {
+        window.location.reload();
+    });
+});

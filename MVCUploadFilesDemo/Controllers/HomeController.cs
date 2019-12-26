@@ -11,9 +11,31 @@ namespace MVCUploadFilesDemo.Controllers
     {
         [HttpGet]
         public ActionResult Index()
-        {
-            return View();
-        }
+        { 
+
+            DirectoryInfo salesFTPDirectory = null;
+            FileInfo[] files = null;
+
+            try
+            {
+                string salesFTPPath = (Server.MapPath("~/Uploads/"));
+                salesFTPDirectory = new DirectoryInfo(salesFTPPath);
+                files = salesFTPDirectory.GetFiles();
+            }
+            catch (DirectoryNotFoundException exp)
+            {
+                exp.Message.ToString();
+            }
+            catch (IOException exp)
+            {
+                exp.Message.ToString();
+            }
+
+
+            files = files.OrderBy(f => f.Name).ToArray();
+
+            return View(files);
+        }      
 
         [HttpPost]
         public ActionResult UploadFiles()
@@ -34,7 +56,7 @@ namespace MVCUploadFilesDemo.Controllers
                 file.SaveAs(fname);
             }
             return Json(FileName, JsonRequestBehavior.AllowGet);
-        }       
+        }
 
         public ActionResult About()
         {
