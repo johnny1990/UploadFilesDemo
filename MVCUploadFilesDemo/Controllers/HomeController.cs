@@ -10,7 +10,7 @@ namespace MVCUploadFilesDemo.Controllers
     public class HomeController : Controller
     {
         [HttpGet]
-        public ActionResult Index()
+        public ActionResult Uploads()
         { 
 
             DirectoryInfo salesFTPDirectory = null;
@@ -39,24 +39,29 @@ namespace MVCUploadFilesDemo.Controllers
 
         [HttpPost]
         public ActionResult UploadFiles()
-        {
-            string FileName = "";
-            HttpFileCollectionBase files = Request.Files;
-            for (int i = 0; i < files.Count; i++)
-            {
-                HttpPostedFileBase file = files[i];
-                string fname;
+        {            
+                string FileName = "";
+                HttpFileCollectionBase files = Request.Files;
+                for (int i = 0; i < files.Count; i++)
+                {
+                    HttpPostedFileBase file = files[i];
+                    string fname;
 
-                
+
                     string[] testfiles = file.FileName.Split(new char[] { '\\' });
                     fname = testfiles[testfiles.Length - 1];
-                
- 
-                fname = Path.Combine(Server.MapPath("~/Uploads/"), fname);
-                file.SaveAs(fname);
-            }
-            return Json(FileName, JsonRequestBehavior.AllowGet);
+
+
+                    fname = Path.Combine(Server.MapPath("~/Uploads/"), fname);
+                    file.SaveAs(fname);
+                }
+                ViewBag.FileStatus = "File uploaded successfully.";
+                return Json(FileName, JsonRequestBehavior.AllowGet);
+              
+
+        
         }
+
 
         public ActionResult About()
         {
