@@ -1,0 +1,48 @@
+﻿@model List<string>
+
+@{
+    ViewBag.Title = "Archive";
+}
+<title>File Download In Zip</title>
+
+<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
+      rel="stylesheet">
+<link href="../../Content/bootstrap.css" rel="stylesheet" type="text/css" />
+<link href="../../Content/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+
+<div align="center">
+    <table align="center" border="1" cellpadding="4" cellspacing="4">
+        <thead>
+            <tr>
+                <th class="bg-warning text-primary">Select</th>
+                <th class="bg-warning text-primary">File Name</th>
+            </tr>
+        </thead>
+        @using (Html.BeginForm("ZipArchive", "Home", FormMethod.Post, new { @enctype = "multipart/form-data" }))
+        {
+            foreach (string file in Model)
+            {
+                <tr>
+                    <td>
+                        <input type="checkbox" id="fileUpload"
+                               name="selectedfiles" value="@file" />
+                    </td>
+                    <td class="bg-success">@file</td>
+                </tr>
+
+            }
+            <tr>
+                <td colspan="2">
+                    <input type="submit" class=" btn btn-primary" id="fileUploadExcel" onclick="return validateData();"  value="Download" />
+                </td>
+            </tr>
+
+        }
+    </table>
+</div>
+
+@section scripts{
+    <script src="https://code.jquery.com/jquery-3.4.2.js"></script>
+    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
+    <script type="text/javascript" src="~/Scripts/Archive.js"></script>
+}

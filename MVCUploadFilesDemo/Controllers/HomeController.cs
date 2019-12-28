@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -56,12 +57,44 @@ namespace MVCUploadFilesDemo.Controllers
                     file.SaveAs(fname);
                 }
                 ViewBag.FileStatus = "File uploaded successfully.";
-                return Json(FileName, JsonRequestBehavior.AllowGet);
-              
-
-        
+                return Json(FileName, JsonRequestBehavior.AllowGet);                
         }
 
+        [HttpGet]
+        public ActionResult Archive()
+        {
+            string[] files = Directory.GetFiles(
+                            Server.MapPath("~/Uploads"));
+            List<string> downloads = new List<string>();
+            foreach (string file in files)
+            {
+                downloads.Add(Path.GetFileName(file));
+            }
+            return View(downloads);
+        }
+
+        [HttpPost]
+        public ActionResult ZipArchive(List<string> selectedfiles)
+        {
+            if (System.IO.File.Exists(Server.MapPath
+                             ("~/ZipFiles/bundle.zip")))
+            {
+                System.IO.File.Delete(Server.MapPath
+                              ("~/ZipFiles/bundle.zip"));
+            }
+            ZipArchive zip = ZipFile.Open(Server.MapPath
+                     ("~/ZipFiles/bundle.zip"), ZipArchiveMode.Create);
+            foreach (string file in selectedfiles)
+            {
+                zip.CreateEntryFromFile(Server.MapPath
+                     ("~/Uploads/" + file), file);
+            }
+            zip.Dispose();
+
+            return File(Server.MapPath("~/ZipFiles/bundle.zip"),
+                      "application/zip", "Archive.zip");
+
+        }
 
         public ActionResult About()
         {
