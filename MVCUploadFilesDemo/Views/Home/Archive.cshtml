@@ -1,48 +1,55 @@
-﻿@model List<string>
-
+﻿@using MVCUploadFilesDemo.Models
+@model List<FilesArchiveModel>
 @{
     ViewBag.Title = "Archive";
 }
-<title>File Download In Zip</title>
 
-<link href="https://code.jquery.com/ui/1.10.4/themes/ui-lightness/jquery-ui.css"
-      rel="stylesheet">
-<link href="../../Content/bootstrap.css" rel="stylesheet" type="text/css" />
-<link href="../../Content/bootstrap-theme.css" rel="stylesheet" type="text/css" />
+<h1 class="text-center">File Download In Zip Archive</h1>
+<h2 class="text-center">List Of Files in Uploads folder</h2>
 
 <div align="center">
-    <table align="center" border="1" cellpadding="4" cellspacing="4">
-        <thead>
+    @*call api endpoint route to archive selected files *@
+    @using (Html.BeginForm("", "api/ArchiveAPI/DownloadZipArchive", FormMethod.Post))
+    {
+
+        <table align="center" border="1" cellpadding="4" cellspacing="4">
             <tr>
-                <th class="bg-warning text-primary">Select</th>
-                <th class="bg-warning text-primary">File Name</th>
+                <th>Select file/s to archive</th>
+                <th>File Name</th>
             </tr>
-        </thead>
-        @using (Html.BeginForm("ZipArchive", "Home", FormMethod.Post, new { @enctype = "multipart/form-data" }))
-        {
-            foreach (string file in Model)
+
+            @for (int i = 0; i < Model.Count(); i++)
             {
                 <tr>
+                    <td>@Html.CheckBoxFor(m => m[i].IsSelected)</td>
                     <td>
-                        <input type="checkbox" id="fileUpload"
-                               name="selectedfiles" value="@file" />
+                        @Model[i].FileName
+                        @Html.HiddenFor(m => m[i].FilePath)
+                        @Html.HiddenFor(m => m[i].FileName)
                     </td>
-                    <td class="bg-success">@file</td>
                 </tr>
-
             }
             <tr>
                 <td colspan="2">
-                    <input type="submit" class=" btn btn-primary" id="fileUploadExcel" onclick="return validateData();"  value="Download" />
+                    <input type="submit" class="btn btn-default" value="Download Zip Archive" onclick="validateFiles();" />
                 </td>
             </tr>
-
-        }
-    </table>
+        </table>
+    }
 </div>
 
-@section scripts{
-    <script src="https://code.jquery.com/jquery-3.4.2.js"></script>
-    <script src="https://code.jquery.com/ui/1.10.4/jquery-ui.js"></script>
-    <script type="text/javascript" src="~/Scripts/Archive.js"></script>
-}
+<script>
+
+    //function for validation & notification
+    function validateFiles() {
+        if ($('[type="checkbox"]').is(':checked')) {
+            alert("Congratulations!   Your file is downloading...");
+            return true;
+        }
+
+        else {
+            alert("Selection is empty!   You need to select at least one file!");
+            return false;
+        }
+    }
+</script>

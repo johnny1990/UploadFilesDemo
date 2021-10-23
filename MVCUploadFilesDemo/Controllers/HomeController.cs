@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MVCUploadFilesDemo.Models;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -63,38 +64,19 @@ namespace MVCUploadFilesDemo.Controllers
         [HttpGet]
         public ActionResult Archive()
         {
-            string[] files = Directory.GetFiles(
-                            Server.MapPath("~/Uploads"));
-            List<string> downloads = new List<string>();
-            foreach (string file in files)
+            string[] filePaths = Directory.GetFiles(Server.MapPath("~/Uploads/"));
+            List<FilesArchiveModel> files = new List<FilesArchiveModel>();
+            foreach (string filePath in filePaths)
             {
-                downloads.Add(Path.GetFileName(file));
+                files.Add(new FilesArchiveModel()
+                {
+                    FileName = Path.GetFileName(filePath),
+                    FilePath = filePath
+                });
             }
-            return View(downloads);
+            return View(files);
         }
 
-        [HttpPost]
-        public ActionResult ZipArchive(List<string> selectedfiles)
-        {
-            if (System.IO.File.Exists(Server.MapPath
-                             ("~/ZipFiles/bundle.zip")))
-            {
-                System.IO.File.Delete(Server.MapPath
-                              ("~/ZipFiles/bundle.zip"));
-            }
-            ZipArchive zip = ZipFile.Open(Server.MapPath
-                     ("~/ZipFiles/bundle.zip"), ZipArchiveMode.Create);
-            foreach (string file in selectedfiles)
-            {
-                zip.CreateEntryFromFile(Server.MapPath
-                     ("~/Uploads/" + file), file);
-            }
-            zip.Dispose();
-
-            return File(Server.MapPath("~/ZipFiles/bundle.zip"),
-                      "application/zip", "Archive.zip");
-
-        }
 
         public ActionResult About()
         {
